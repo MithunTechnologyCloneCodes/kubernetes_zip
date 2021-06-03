@@ -1,0 +1,44 @@
+====kubectl installation on aws
+apt-get update && sudo apt-get install -y apt-transport-https cur
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+KUBELET_EXTRA_ARGS=--cgroup-driver=cgroupfs
+KUBELET_EXTRA_ARGS=--cgroup-driver=systemd
+systemctl daemon-reload
+systemctl restart kubelet
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+kubeadm init --apiserver-advertise-address=172.31.6.91  --pod-network-cidr=192.168.0.0/16
+======================================
+--directory
+ mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+----------commads
+kubectl get pods --all-namespaces
+kubectl get pods --all-namespaces -o wide
+kubectl create -f deploy.yaml
+kubectl create deployment nginx1 --image=nginx:1.7.9
+kubectl delete deployment nginx1
+--create service to see ports
+kubectl create service nodeport nginx --tcp=80:80
+kubectl get svc
+====================================================
+
+
+--kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+--kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+===============================================
+AKS_RESOURCE_GROUP=kube-demo
+AKS_CLUSTER_NAME=kube1
+ACR_RESOURCE_GROUP=kube-deom
+ACR_NAME=
+
+
+
